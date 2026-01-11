@@ -1,85 +1,105 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <title>Invitation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="utf-8" />
+  <title>Event – FAQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      margin: 0;
-      padding: 24px;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.6;
-    }
-
-    h1 {
-      margin-top: 0;
-    }
-
-    .hint {
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 24px;
-    }
-
-    details {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      background: #fafafa;
-    }
-
-    summary {
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    footer {
-      margin-top: 48px;
-      font-size: 14px;
-      color: #666;
-    }
+    body { font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif; margin: 0; padding: 24px; max-width: 900px; margin-left:auto; margin-right:auto; line-height: 1.6; }
+    header { display:flex; align-items:flex-start; justify-content:space-between; gap: 16px; }
+    h1 { margin: 0; font-size: 24px; }
+    .meta { color:#666; font-size: 14px; margin-top: 6px; }
+    .lang { display:flex; gap: 8px; flex-wrap: wrap; }
+    .lang button { padding: 8px 10px; border: 1px solid #ddd; border-radius: 10px; background: #fff; cursor: pointer; }
+    .lang button[aria-pressed="true"] { border-color: #333; font-weight: 600; }
+    details { border: 1px solid #ddd; border-radius: 10px; padding: 12px 14px; margin: 12px 0; background: #fafafa; }
+    summary { cursor: pointer; font-weight: 600; }
+    footer { margin-top: 40px; color:#666; font-size: 14px; }
   </style>
 </head>
-
 <body>
 
-  <h1>Event – Häufige Fragen (FAQ)</h1>
-  <div class="hint">Stand: Januar 2026</div>
+  <header>
+    <div>
+      <h1 id="pageTitle">Event – FAQ</h1>
+      <div class="meta" id="updated"></div>
+    </div>
 
-  <details>
-    <summary>Wann beginnt der Einlass?</summary>
-    <p>Der Einlass beginnt um 18:00 Uhr.</p>
-  </details>
+    <nav class="lang" aria-label="Sprachauswahl">
+      <button type="button" data-lang="de">DE</button>
+      <button type="button" data-lang="en">EN</button>
+      <button type="button" data-lang="lv">LV</button>
+    </nav>
+  </header>
 
-  <details>
-    <summary>Wo findet das Event statt?</summary>
-    <p>Die Veranstaltung findet im Hauptgebäude statt. Der Eingang ist ausgeschildert.</p>
-  </details>
+  <main id="faq"></main>
 
-  <details>
-    <summary>Gibt es Parkmöglichkeiten?</summary>
-    <p>Es stehen nur begrenzte Parkplätze zur Verfügung. Wir empfehlen die Anreise mit öffentlichen Verkehrsmitteln.</p>
-  </details>
+  <footer id="footerText"></footer>
 
-  <details>
-    <summary>Gibt es Essen und Getränke?</summary>
-    <p>Ja, während des Events werden Speisen und Getränke angeboten.</p>
-  </details>
+<script>
+  const supported = ["de", "en", "lv"];
+  const faqEl = document.getElementById("faq");
+  const updatedEl = document.getElementById("updated");
+  const pageTitleEl = document.getElementById("pageTitle");
+  const footerEl = document.getElementById("footerText");
 
-  <details>
-    <summary>An wen kann ich mich bei Fragen wenden?</summary>
-    <p>Bitte wenden Sie sich vor Ort an das Organisationsteam oder den Info-Desk.</p>
-  </details>
+  const uiText = {
+    de: { footer: "Diese Seite ist für Besucher des Events gedacht und wird bei Bedarf aktualisiert." },
+    en: { footer: "This page is intended for event attendees and will be updated if needed." },
+    lv: { footer: "Šī lapa ir paredzēta pasākuma apmeklētājiem un tiks atjaunināta, ja nepieciešams." }
+  };
 
-  <footer>
-    Diese Seite ist für Besucher des Events gedacht und wird bei Bedarf aktualisiert.
-  </footer>
+  function preferredLang() {
+    const saved = localStorage.getItem("faq_lang");
+    if (saved && supported.includes(saved)) return saved;
+
+    const nav = (navigator.language || "de").slice(0, 2).toLowerCase();
+    return supported.includes(nav) ? nav : "de";
+  }
+
+  function setLangButtonsActive(lang) {
+    document.querySelectorAll("button[data-lang]").forEach(btn => {
+      btn.setAttribute("aria-pressed", btn.dataset.lang === lang ? "true" : "false");
+    });
+  }
+
+  async function loadFaq(lang) {
+    // Wichtig für GitHub Pages: relative URL ohne führendes "/"
+    const res = await fetch(`content/faqs/${lang}.json`, { cache: "no-store" });
+    if (!res.ok) {
+      faqEl.innerHTML = `<p>Fehler: Inhalte (${lang}) konnten nicht geladen werden.</p>`;
+      return;
+    }
+    const data = await res.json();
+
+    document.documentElement.lang = lang;
+    localStorage.setItem("faq_lang", lang);
+    setLangButtonsActive(lang);
+
+    pageTitleEl.textContent = data.title || "Event – FAQ";
+    updatedEl.textContent = data.updated ? `Stand: ${data.updated}` : "";
+    footerEl.textContent = (uiText[lang] && uiText[lang].footer) ? uiText[lang].footer : "";
+
+    faqEl.innerHTML = "";
+    (data.items || []).forEach(item => {
+      const d = document.createElement("details");
+      const s = document.createElement("summary");
+      s.textContent = item.q || "";
+      const p = document.createElement("div");
+      // Antwort als Text (sicher/robust); falls Sie später Formatierung wollen, können wir das gezielt erweitern
+      p.textContent = item.a || "";
+      d.appendChild(s);
+      d.appendChild(p);
+      faqEl.appendChild(d);
+    });
+  }
+
+  document.querySelectorAll("button[data-lang]").forEach(btn => {
+    btn.addEventListener("click", () => loadFaq(btn.dataset.lang));
+  });
+
+  loadFaq(preferredLang());
+</script>
 
 </body>
 </html>
