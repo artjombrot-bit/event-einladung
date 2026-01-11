@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <title>Hochzeit / Kāzas / Wedding – FAQ</title>
+  <title>Invitation & FAQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif; margin: 0; padding: 24px; max-width: 900px; margin-left:auto; margin-right:auto; line-height: 1.6; }
@@ -15,13 +15,14 @@
     details { border: 1px solid #ddd; border-radius: 10px; padding: 12px 14px; margin: 12px 0; background: #fafafa; }
     summary { cursor: pointer; font-weight: 600; }
     footer { margin-top: 40px; color:#666; font-size: 14px; }
+    .msg { padding:12px 14px;border:1px solid #ddd;border-radius:10px;background:#fff; margin-top: 16px; }
   </style>
 </head>
 <body>
 
   <header>
     <div>
-      <h1 id="pageTitle">Hochzeit / Kāzas / Wedding – FAQ</h1>
+      <h1 id="pageTitle">Invitation & FAQ</h1>
       <div class="meta" id="updated"></div>
     </div>
 
@@ -44,15 +45,14 @@
   const footerEl = document.getElementById("footerText");
 
   const uiText = {
-    de: { footer: "Diese Seite ist für Besucher des Events gedacht und wird bei Bedarf aktualisiert." },
-    en: { footer: "This page is intended for event attendees and will be updated if needed." },
-    lv: { footer: "Šī lapa ir paredzēta pasākuma apmeklētājiem un tiks atjaunināta, ja nepieciešams." }
+    de: { footer: "Diese Seite ist für Besucher des Events gedacht und wird bei Bedarf aktualisiert.", stand: "Stand" },
+    en: { footer: "This page is intended for event attendees and will be updated if needed.", stand: "Last updated" },
+    lv: { footer: "Šī lapa ir paredzēta pasākuma apmeklētājiem un tiks atjaunināta, ja nepieciešams.", stand: "Atjaunināts" }
   };
 
   function preferredLang() {
     const saved = localStorage.getItem("faq_lang");
     if (saved && supported.includes(saved)) return saved;
-
     const nav = (navigator.language || "de").slice(0, 2).toLowerCase();
     return supported.includes(nav) ? nav : "de";
   }
@@ -63,35 +63,54 @@
     });
   }
 
+  function showMessage(html) {
+    faqEl.innerHTML = `<div class="msg">${html}</div>`;
+  }
+
   async function loadFaq(lang) {
-    // Wichtig für GitHub Pages: relative URL ohne führendes "/"
-    const res = await fetch(`content/faqs/${lang}.json`, { cache: "no-store" });
-    if (!res.ok) {
-      faqEl.innerHTML = `<p>Fehler: Inhalte (${lang}) konnten nicht geladen werden.</p>`;
-      return;
+    try {
+      setLangButtonsActive(lang);
+      showMessage(`Lade Inhalte (${lang}) …`);
+
+      // Wichtig für GitHub Pages Projektseiten: RELATIV (ohne führendes "/")
+      const url = `content/faqs/${lang}.json`;
+      const res = await fetch(url, { cache: "no-store" });
+
+      if (!res.ok) {
+        showMessage(`Fehler: <code>${url}</code> konnte nicht geladen werden (HTTP ${res.status}).<br>
+        Prüfen Sie im Repository, ob die Datei exakt existiert: <code>${url}</code>.`);
+        return;
+      }
+
+      const data = await res.json();
+
+      document.documentElement.lang = lang;
+      localStorage.setItem("faq_lang", lang);
+
+      pageTitleEl.textContent = data.title || "Invitation & FAQ";
+      const standLabel = uiText[lang]?.stand || "Stand";
+      updatedEl.textContent = data.updated ? `${standLabel}: ${data.updated}` : "";
+      footerEl.textContent = uiText[lang]?.footer || "";
+
+      faqEl.innerHTML = "";
+      (data.items || []).forEach(item => {
+        const d = document.createElement("details");
+        const s = document.createElement("summary");
+        s.textContent = item.q || "";
+        const p = document.createElement("div");
+        p.textContent = item.a || "";
+        d.appendChild(s);
+        d.appendChild(p);
+        faqEl.appendChild(d);
+      });
+
+      if (!data.items || data.items.length === 0) {
+        showMessage(`Hinweis: Keine FAQ-Items in <code>${url}</code> gefunden.`);
+      }
+    } catch (e) {
+      showMessage(`Fehler beim Verarbeiten der Inhalte (${lang}):<br><code>${String(e)}</code><br><br>
+      Sehr häufig ist die Ursache ein ungültiges JSON (Kommas/Anführungszeichen).`);
     }
-    const data = await res.json();
-
-    document.documentElement.lang = lang;
-    localStorage.setItem("faq_lang", lang);
-    setLangButtonsActive(lang);
-
-    pageTitleEl.textContent = data.title || "Wedding – FAQ";
-    updatedEl.textContent = data.updated ? `Stand: ${data.updated}` : "";
-    footerEl.textContent = (uiText[lang] && uiText[lang].footer) ? uiText[lang].footer : "";
-
-    faqEl.innerHTML = "";
-    (data.items || []).forEach(item => {
-      const d = document.createElement("details");
-      const s = document.createElement("summary");
-      s.textContent = item.q || "";
-      const p = document.createElement("div");
-      // Antwort als Text (sicher/robust); falls Sie später Formatierung wollen, können wir das gezielt erweitern
-      p.textContent = item.a || "";
-      d.appendChild(s);
-      d.appendChild(p);
-      faqEl.appendChild(d);
-    });
   }
 
   document.querySelectorAll("button[data-lang]").forEach(btn => {
