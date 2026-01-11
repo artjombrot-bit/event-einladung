@@ -76,7 +76,7 @@
     localStorage.setItem("faq_lang", lang);
     setLangButtonsActive(lang);
 
-    pageTitleEl.textContent = data.title || "Event – FAQ";
+    pageTitleEl.textContent = data.title || "Wedding – FAQ";
     updatedEl.textContent = data.updated ? `Stand: ${data.updated}` : "";
     footerEl.textContent = (uiText[lang] && uiText[lang].footer) ? uiText[lang].footer : "";
 
