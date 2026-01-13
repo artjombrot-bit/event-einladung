@@ -68,50 +68,63 @@
   }
 
   async function loadFaq(lang) {
+  try {
+    setLangButtonsActive(lang);
+    const url = `content/faqs/${lang}.json`;
+
+    // 1) Rohtext laden (nicht sofort JSON parsen)
+    const res = await fetch(url, { cache: "no-store" });
+    const text = await res.text();
+
+    // 2) Debug auf der Seite anzeigen
+    showMessage(
+      `Debug:<br>
+      URL: <code>${url}</code><br>
+      HTTP: <code>${res.status}</code><br><br>
+      Response (Anfang):<br><pre style="white-space:pre-wrap;max-height:220px;overflow:auto;border:1px solid #eee;padding:10px;border-radius:8px;">${text.slice(0, 600)}</pre>`
+    );
+
+    if (!res.ok) return;
+
+    // 3) Jetzt erst JSON parsen (mit sauberer Fehlermeldung)
+    let data;
     try {
-      setLangButtonsActive(lang);
-      showMessage(`Lade Inhalte (${lang}) …`);
-
-      // Wichtig für GitHub Pages Projektseiten: RELATIV (ohne führendes "/")
-      const url = `content/faqs/${lang}.json`;
-      const res = await fetch(url, { cache: "no-store" });
-
-      if (!res.ok) {
-        showMessage(`Fehler: <code>${url}</code> konnte nicht geladen werden (HTTP ${res.status}).<br>
-        Prüfen Sie im Repository, ob die Datei exakt existiert: <code>${url}</code>.`);
-        return;
-      }
-
-      const data = await res.json();
-
-      document.documentElement.lang = lang;
-      localStorage.setItem("faq_lang", lang);
-
-      pageTitleEl.textContent = data.title || "Invitation & FAQ";
-      const standLabel = uiText[lang]?.stand || "Stand";
-      updatedEl.textContent = data.updated ? `${standLabel}: ${data.updated}` : "";
-      footerEl.textContent = uiText[lang]?.footer || "";
-
-      faqEl.innerHTML = "";
-      (data.items || []).forEach(item => {
-        const d = document.createElement("details");
-        const s = document.createElement("summary");
-        s.textContent = item.q || "";
-        const p = document.createElement("div");
-        p.textContent = item.a || "";
-        d.appendChild(s);
-        d.appendChild(p);
-        faqEl.appendChild(d);
-      });
-
-      if (!data.items || data.items.length === 0) {
-        showMessage(`Hinweis: Keine FAQ-Items in <code>${url}</code> gefunden.`);
-      }
+      data = JSON.parse(text);
     } catch (e) {
-      showMessage(`Fehler beim Verarbeiten der Inhalte (${lang}):<br><code>${String(e)}</code><br><br>
-      Sehr häufig ist die Ursache ein ungültiges JSON (Kommas/Anführungszeichen).`);
+      showMessage(
+        `JSON-Parse-Fehler (${lang})<br>
+        URL: <code>${url}</code><br><br>
+        Fehlermeldung: <code>${String(e)}</code><br><br>
+        Hinweis: Sehr oft sind es “smarte” Anführungszeichen („ “) oder ein Zeilenumbruch im Text.`
+      );
+      return;
     }
+
+    // 4) Wenn JSON ok ist: normale Darstellung
+    document.documentElement.lang = lang;
+    localStorage.setItem("faq_lang", lang);
+
+    pageTitleEl.textContent = data.title || "Invitation & FAQ";
+    const standLabel = uiText[lang]?.stand || "Stand";
+    updatedEl.textContent = data.updated ? `${standLabel}: ${data.updated}` : "";
+    footerEl.textContent = uiText[lang]?.footer || "";
+
+    faqEl.innerHTML = "";
+    (data.items || []).forEach(item => {
+      const d = document.createElement("details");
+      const s = document.createElement("summary");
+      s.textContent = item.q || "";
+      const p = document.createElement("div");
+      p.textContent = item.a || "";
+      d.appendChild(s);
+      d.appendChild(p);
+      faqEl.appendChild(d);
+    });
+
+  } catch (e) {
+    showMessage(`Allgemeiner Fehler: <code>${String(e)}</code>`);
   }
+}
 
   document.querySelectorAll("button[data-lang]").forEach(btn => {
     btn.addEventListener("click", () => loadFaq(btn.dataset.lang));
