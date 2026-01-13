@@ -1,4 +1,7 @@
 {
   "updated": "11.01.2026",
-  "title": "Kāzas - svarīgi jautājumi"
+  "title": "Wedding - important questions",
+  "items": [
+    { "q": "Test", "a": "Test" }
+  ]
 }
