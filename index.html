@@ -91,12 +91,7 @@
     const footerEl = document.getElementById("footerText");
 
     // UI-Texte
-    const uiText = {
-      de: { footer: "Diese Seite ist für Besucher des Events gedacht und wird bei Bedarf aktualisiert.", stand: "Stand" },
-      en: { footer: "This page is intended for event attendees and will be updated if needed.", stand: "Last updated" },
-      lv: { footer: "Šī lapa ir paredzēta pasākuma apmeklētājiem un tiks atjaunināta, ja nepieciešams.", stand: "Atjaunināts" }
-    };
-
+    
     function preferredLang() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved && supported.includes(saved)) return saved;
