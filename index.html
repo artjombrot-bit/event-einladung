@@ -97,6 +97,11 @@
     const footerEl = document.getElementById("footerText");
 
     // UI-Texte
+     const uiText = {
+      de: { footer: "Diese Seite ist für Besucher des Events gedacht.", stand: "Stand" },
+      en: { footer: "This page is intended for event attendees.", stand: "Last updated" },
+      lv: { footer: "Šī lapa ir paredzēta pasākuma apmeklētājiem un tiks atjaunināta, ja nepieciešams.", stand: "Atjaunināts" }
+    };
     
     function preferredLang() {
       const saved = localStorage.getItem(STORAGE_KEY);
