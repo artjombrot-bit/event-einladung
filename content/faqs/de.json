@@ -1,12 +1,10 @@
 {
-  "updated": "11.01.2026",
   "title": "Wedding - important questions",
   "items": [
     { "q": "Wie sieht der Zeitplan aus?", "a": "Die Gäste kommen ab 15:30 an. Die Zeremonie beginnt um 14:30. Nach einem kleinen Umtrunk wird das Abendessen serviert." },
     { "q": "Gibt es dort Parkplätze?", "a": "Ja, direkt vor dem Anwesen."},
     { "q": "Wie lautet die Adresse?", "a": "Abgunstes Muiza, Zelenieku pagasts, Jelgava novads, LV-3011."},
     { "q": "Wie sieht die An- und Abreise aus?", "a": "Ein Bus holt die Gäste aus Riga ab und bringt sie nach der Feier wieder zurück. Die Gäste, die im Anwesen übernachten möchte, können auch den Bus am nöchsten Tag um 12 Uhr nehmen." },
-    { "q": "Kann man dort übernachten?", "a": "Ja, es gibt genug Zimmer für alle Gäste direkt im Anwesen."},
-    
-  ]
+    { "q": "Kann man dort übernachten?", "a": "Ja, es gibt genug Zimmer für alle Gäste direkt im Anwesen."}
+    ]
 }
