@@ -77,7 +77,7 @@
 
     <nav class="lang" aria-label="Sprachauswahl">
       <button type="button" data-lang="de">DE</button>
-      <button type="button" data-lang="en">EN</button>
+      <button type="button" data-lang="en">RU</button>
       <button type="button" data-lang="lv">LV</button>
     </nav>
   </header>
@@ -87,7 +87,7 @@
 
   <script>
     // Konfiguration
-    const supported = ["de", "en", "lv"];
+    const supported = ["de", "ru", "lv"];
     const STORAGE_KEY = "faq_lang";
 
     // DOM
@@ -98,8 +98,8 @@
 
     // UI-Texte
      const uiText = {
-      de: { footer: "Diese Seite ist für Besucher des Events gedacht.", stand: "Stand" },
-      en: { footer: "This page is intended for event attendees.", stand: "Last updated" },
+      de: { footer: "Fragen und Antworten.", stand: "Stand" },
+      ru: { footer: "Дополнительная информация для гостей.", stand: "Last updated" },
       lv: { footer: "Šī lapa ir paredzēta pasākuma apmeklētājiem un tiks atjaunināta, ja nepieciešams.", stand: "Atjaunināts" }
     };
     
