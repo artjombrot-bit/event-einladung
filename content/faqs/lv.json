@@ -1,8 +1,10 @@
 {
   "updated": "13.01.2026",
-  "title": "Wedding - important questions",
+  "title": "Papildu informācija viesiem",
   "items": [
-    { "q": "Test", "a": "Test" },
-    { "q": "Test 2 ", "a": "Test 2" }
+    { "q": "Kāzu svinību vieta un laiks", "a": "Kāzu ceremonija un svinības notiks Abgunstes muižā. \nAdrese: Abgunste, Zaļenieku pagasts, Jelgavas novads, LV-3011 \nhttps://www.abgunste.lv/ \nMēs ar prieku gaidīsim jūs no plkst. 15:30. Šajā laikā viesus sagaidīs vieglas uzkodas un glāze dzirkstošā, lai kopīgi iesāktu šo īpašo un priecīgo dienu. \nKāzu ceremonijas sākums — plkst. 16:30. \nLūdzam, ja iespējams, ierasties nedaudz agrāk, lai pirms ceremonijas varētu nesteidzīgi sasveicināties ar citiem viesiem un izbaudīt svētku atmosfēru." },
+    { "q": "Transports", "a": "Viesu ērtībai tiks nodrošināts transports no Rīgas uz svinību vietu. \nAutobuss izbrauks no Rīgas centra aptuveni plkst. 14:00. \nPēc svinībām tiks organizēts transports atpakaļ uz Rīgu ap pusnakti. \nViesiem, kuri izvēlēsies palikt nakšņot muižā, nākamajā dienā tiks organizēts transports uz Rīgu ap plkst. 12:00. \nPrecīzāka informācija par izbraukšanas vietu un laiku tiks nosūtīta tuvāk kāzu datumam." },
+    { "q": "Nakšņošana", "a": "Viesiem, kuri vēlēsies palikt pēc svinībām, tiks nodrošināta nakšņošana Abgunstes muižas telpās. \nNumuriņi un naktsmītnes tiks sadalītas tā, lai ikviens viesis varētu ērti atpūsties pēc svētku vakara. \nNākamajā rītā ar prieku aicinām jūs turpināt svinīgo noskaņu kopīgās brokastīs. \n10:00 — Brokastis \n12:00 — Viesu izbraukšana no muižas \nViesiem, kuri izmantos kopējo transportu, tiks nodrošināts autobuss uz Rīgu ap plkst. 12:00." },
+    { "q": "Svētku programma", "a": "15:30 — Viesu ierašanās \nSagaidīšanas uzkodas, dzirkstošais un sarunas muižas dārzā. \n16:30 — Kāzu ceremonija \n17:00 – 19:00 \nJaunā pāra sveikšana \nKopīga fotografēšanās \nDzirkstošais, uzkodas un kāzu tortes griešana \n19:00 — Svētku vakariņas \n21:00 — Jaunā pāra pirmā deja un svinību vakara atklāšana" }
   ]
 }
